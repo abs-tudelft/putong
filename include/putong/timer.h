@@ -22,7 +22,7 @@
 namespace putong {
 
 /// @brief An std::chrono-based timer wrapper.
-template<typename clock=std::chrono::high_resolution_clock>
+template<typename clock=std::chrono::steady_clock>
 struct Timer {
   using ns = std::chrono::nanoseconds;
   using point = std::chrono::time_point<clock, ns>;
@@ -32,6 +32,23 @@ struct Timer {
   explicit Timer(bool start = false) {
     if (start)
       Start();
+  }
+
+  /**
+   * \brief Return whether the internal clock used is steady or not.
+   *
+   * Also see: https://en.cppreference.com/w/cpp/named_req/Clock
+   *
+   * \return True if the clock is steady, false otherwise.
+   */
+  inline static auto steady() -> bool {
+    return clock::is_steady;
+  }
+
+  /// \brief Return the resolution in microseconds.
+  inline static auto resolution_us() -> double {
+    typedef typename std::ratio_multiply<typename clock::period, std::mega>::type us;
+    return static_cast<double>(us::num) / us::den;
   }
 
   /// @brief Timer start point.
