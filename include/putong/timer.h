@@ -46,20 +46,20 @@ struct Timer {
   inline void Stop() { stop_ = clock::now(); }
 
   /// @brief Retrieve the interval in seconds.
-  inline auto seconds() -> double {
+  inline auto seconds() const -> double {
     duration diff = stop_ - start_;
     return diff.count();
   }
 
   /// @brief Return the interval in seconds as a formatted string.
-  inline auto str(int width = 14) -> std::string {
+  inline auto str(int width = 14) const -> std::string {
     std::stringstream ss;
     ss << std::setprecision(width - 5) << std::setw(width) << std::fixed << seconds();
     return ss.str();
   }
 
   /// @brief Print the interval on some output stream
-  inline void report(std::ostream &os = std::cout, bool last = false, int width = 15) {
+  inline void report(std::ostream &os = std::cout, bool last = false, int width = 15) const {
     os << std::setw(width) << ((last ? " " : "") + str() + (last ? "\n" : ",")) << std::flush;
   }
 };
