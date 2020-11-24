@@ -26,22 +26,24 @@ enum class StatusType : char {
   OK, Error
 };
 
-template<typename Err>
+template<typename E>
 class Status {
-  static_assert(std::is_enum_v<Err>);
+  static_assert(std::is_enum_v<E>);
 
  public:
   Status() = default;
-  Status(Err code, std::string message) : status_(StatusType::Error), err_(code), msg_(std::move(message)) {}
+  Status(E code, std::string message)
+      : status_(StatusType::Error), err_(code), msg_(std::move(message)) {}
 
   static auto OK() -> Status { return Status(); }
 
   [[nodiscard]] auto ok() const -> bool { return status_ == StatusType::OK; }
   [[nodiscard]] auto msg() const -> std::string { return msg_; }
+  [[nodiscard]] auto err() const -> E { return err_; }
 
  private:
   StatusType status_ = StatusType::OK;
-  Err err_;
+  E err_;
   std::string msg_;
 };
 
