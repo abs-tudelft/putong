@@ -16,4 +16,16 @@ add_compile_unit(
   TYPE INTERFACE
 )
 
+add_compile_unit(
+  NAME putong::tests
+  TYPE TESTS
+  PRPS
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+  SRCS
+    test/putong/test_timer.cpp
+  DEPS
+    putong
+)
+
 compile_units()
