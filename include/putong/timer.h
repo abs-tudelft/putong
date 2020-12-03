@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <chrono>
 #include <vector>
+#include <atomic>
 
 namespace putong {
 
@@ -95,7 +96,7 @@ struct SplitTimer {
   using duration = std::chrono::duration<double>;
 
   point splits[num_splits + 1];
-  size_t split_idx = 0;
+  std::atomic<size_t> split_idx = 0;
 
   /// @brief Construct a new timer. This also starts the timer if start=true.
   explicit SplitTimer(bool start = false) {
@@ -123,7 +124,7 @@ struct SplitTimer {
   /// @brief Start the timer.
   inline void Start() {
     splits[0] = clock::now();
-    split_idx = 1;
+    split_idx.store(1);
   }
 
   /// @brief Record a split time.
@@ -134,8 +135,8 @@ struct SplitTimer {
           "Putong SplitTimer overflows " + std::to_string(num_splits) + " splits.");
     }
 #endif
-    splits[split_idx] = clock::now();
-    split_idx++;
+    auto idx = split_idx.fetch_add(1);
+    splits[idx] = clock::now();
   }
 
   /// @brief Retrieve the split intervals in seconds.
