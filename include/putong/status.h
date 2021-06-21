@@ -14,19 +14,17 @@
 
 #pragma once
 
+#include <chrono>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
-#include <chrono>
 #include <utility>
 
 namespace putong {
 
-enum class StatusType : char {
-  OK, Error
-};
+enum class StatusType : char { OK, Error };
 
-template<typename E>
+template <typename E>
 class Status {
   static_assert(std::is_enum_v<E>);
 
@@ -47,4 +45,4 @@ class Status {
   std::string msg_;
 };
 
-} // namespace putong
+}  // namespace putong

@@ -19,5 +19,6 @@
 
 /// @brief A collection of arguably useful templates and functions.
 ///
-/// The name is derived from the Pinyin rendering of the Chinese word for "common" (as in: ordinary).
+/// The name is derived from the Pinyin rendering of the Chinese word for "common" (as in:
+/// ordinary).
 namespace putong {}

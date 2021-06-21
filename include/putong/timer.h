@@ -14,17 +14,17 @@
 
 #pragma once
 
+#include <atomic>
+#include <chrono>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
-#include <chrono>
 #include <vector>
-#include <atomic>
 
 namespace putong {
 
 /// @brief An std::chrono-based timer wrapper.
-template<typename clock=std::chrono::steady_clock>
+template <typename clock = std::chrono::steady_clock>
 struct Timer {
   using ns = std::chrono::nanoseconds;
   using point = std::chrono::time_point<clock, ns>;
@@ -32,8 +32,7 @@ struct Timer {
 
   /// @brief Construct a new timer. This also starts the timer if start=true.
   explicit Timer(bool start = false) {
-    if (start)
-      Start();
+    if (start) Start();
   }
 
   /**
@@ -43,9 +42,7 @@ struct Timer {
    *
    * \return True if the clock is steady, false otherwise.
    */
-  inline static auto steady() -> bool {
-    return clock::is_steady;
-  }
+  inline static auto steady() -> bool { return clock::is_steady; }
 
   /// \brief Return the resolution in microseconds.
   inline static auto resolution_us() -> double {
@@ -78,8 +75,7 @@ struct Timer {
   }
 
   /// @brief Print the interval on some output stream
-  inline void report(std::ostream &os = std::cout,
-                     bool last = false,
+  inline void report(std::ostream& os = std::cout, bool last = false,
                      int width = 15) const {
     os << std::setw(width) << ((last ? " " : "") + str() + (last ? "\n" : ","))
        << std::flush;
@@ -87,7 +83,7 @@ struct Timer {
 };
 
 /// @brief An std::chrono-based split timer wrapper with a static number of splits.
-template<unsigned int num_splits = 1, typename clock=std::chrono::steady_clock>
+template <unsigned int num_splits = 1, typename clock = std::chrono::steady_clock>
 struct SplitTimer {
   static_assert(num_splits > 0);
 
@@ -100,8 +96,7 @@ struct SplitTimer {
 
   /// @brief Construct a new timer. This also starts the timer if start=true.
   explicit SplitTimer(bool start = false) {
-    if (start)
-      Start();
+    if (start) Start();
   }
 
   /**
@@ -111,9 +106,7 @@ struct SplitTimer {
    *
    * \return True if the clock is steady, false otherwise.
    */
-  inline static auto steady() -> bool {
-    return clock::is_steady;
-  }
+  inline static auto steady() -> bool { return clock::is_steady; }
 
   /// \brief Return the resolution in microseconds.
   inline static auto resolution_us() -> double {
@@ -131,8 +124,8 @@ struct SplitTimer {
   inline void Split() {
 #ifndef NDEBUG
     if (split_idx > num_splits) {
-      throw std::runtime_error(
-          "Putong SplitTimer overflows " + std::to_string(num_splits) + " splits.");
+      throw std::runtime_error("Putong SplitTimer overflows " +
+                               std::to_string(num_splits) + " splits.");
     }
 #endif
     auto idx = split_idx.fetch_add(1);
@@ -150,7 +143,7 @@ struct SplitTimer {
   }
 
   /// @brief Push comma separated intervals in seconds onto some stream as strings
-  inline void report(std::ostream &os = std::cout, int precision = 15) const {
+  inline void report(std::ostream& os = std::cout, int precision = 15) const {
     auto intervals = seconds();
     for (int i = 0; i < intervals.size(); i++) {
       if (i < intervals.size() - 1) {
@@ -161,7 +154,6 @@ struct SplitTimer {
     }
     os << std::flush;
   }
-
 };
 
-} // namespace putong
+}  // namespace putong
