@@ -99,6 +99,13 @@ struct SplitTimer {
     if (start) Start();
   }
 
+  /// @brief Copy-constructor.
+  SplitTimer(const SplitTimer& s) {
+    splits = s.splits;
+    // Can't implicitly copy atomic, so we have to do it manually.
+    split_idx = s.split_idx.load();
+  }
+
   /**
    * \brief Return whether the internal clock used is steady or not.
    *
