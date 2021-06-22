@@ -101,9 +101,20 @@ struct SplitTimer {
 
   /// @brief Copy-constructor.
   SplitTimer(const SplitTimer& s) {
-    splits = s.splits;
+    for (size_t i = 0; i < num_splits + 1; i++) {
+      splits[i] = s.splits[i];
+    }
     // Can't implicitly copy atomic, so we have to do it manually.
     split_idx = s.split_idx.load();
+  }
+
+  /// @brief Copy assignment operator
+  SplitTimer& operator=(const SplitTimer& other) {
+    for (size_t i = 0; i < num_splits + 1; i++) {
+      splits[i] = other.splits[i];
+    }
+    split_idx = other.split_idx.load();
+    return *this;
   }
 
   /**
