@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <gmock/gmock.h>
+
 #include <chrono>
 #include <thread>
 
@@ -32,11 +33,38 @@ TEST(Timer, Split) {
   std::this_thread::sleep_for(50ms);
   t.Split();
 
-  for (const auto &split : t.seconds()) {
+  for (const auto& split : t.seconds()) {
     ASSERT_TRUE(split > 0.04 && split < 0.06);
   }
 
   t.report(std::cout);
 }
 
+TEST(Timer, SplitCopyConstruct) {
+  using namespace std::chrono_literals;
+  SplitTimer<3> x(true);
+  x.Split();
+  x.Split();
+  SplitTimer<3> y = x;
+
+  ASSERT_EQ(y.split_idx.load(), 3);
+  ASSERT_EQ(x.splits[0], y.splits[0]);
+  ASSERT_EQ(x.splits[1], y.splits[1]);
+  ASSERT_EQ(x.splits[2], y.splits[2]);
 }
+
+TEST(Timer, SplitCopyAssign) {
+  using namespace std::chrono_literals;
+  SplitTimer<3> x(true);
+  x.Split();
+  x.Split();
+  SplitTimer<3> y;
+
+  y = x;
+  ASSERT_EQ(y.split_idx.load(), 3);
+  ASSERT_EQ(x.splits[0], y.splits[0]);
+  ASSERT_EQ(x.splits[1], y.splits[1]);
+  ASSERT_EQ(x.splits[2], y.splits[2]);
+}
+
+}  // namespace putong
